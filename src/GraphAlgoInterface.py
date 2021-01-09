@@ -1,12 +1,12 @@
 from typing import List
 
-#from src import GraphInterface
+# from src import GraphInterface
 
 
 class GraphAlgoInterface:
     """This abstract class represents an interface of a graph."""
 
-    def get_graph(self) :
+    def get_graph(self):
         """
         :return: the directed graph on which the algorithm works on.
         """

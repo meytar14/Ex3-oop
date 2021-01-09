@@ -1,10 +1,11 @@
 class Node:
-    def __init__(self,key:int,pos=(0,0,0)):
-        self.key=key
-        self.pos=pos
-        self.tag=0
-        self.in_edges={}
-        self.out_edges={}
+    def __init__(self, key: int, pos=(0, 0, 0)):
+        self.key = key
+        self.pos = pos
+        self.tag = 0
+        self.in_edges = {}
+        self.out_edges = {}
+        # self.weight = -1
 
     def getKey(self):
         return self.key
@@ -18,13 +19,13 @@ class Node:
     def getTag(self):
         return self.tag
 
-    def setTag(self,tag):
-        self.tag=tag
+    def setTag(self, tag):
+        self.tag = tag
 
-    def addNi(self,key:int, weight:float):
-        self.out_edges[key]=weight
+    def addNi(self, key: int, weight: float):
+        self.out_edges[key] = weight
 
-    def addInNi(self,key,weight):
+    def addInNi(self, key, weight):
         self.in_edges[key]=weight
 
     def getInEdges(self):
@@ -33,15 +34,8 @@ class Node:
     def getOutEdges(self):
         return self.out_edges
 
-
-    def removeNi(self,key:int):
+    def removeNi(self, key: int):
         self.out_edges.pop(key)
 
-    def removeInNi(self,key:int):
+    def removeInNi(self, key: int):
         self.in_edges.pop(key)
-
-
-
-
-
-
