@@ -1,8 +1,8 @@
 from GraphAlgoInterface import GraphAlgoInterface
 from Graph import Graph
 import json
-import matplotlib as plt
-import numpy as np
+import matplotlib.pyplot as plt
+# import numpy as np
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -119,19 +119,66 @@ class GraphAlgo(GraphAlgoInterface):
     def plot_graph(self) -> None:
         x_vals = []
         y_vals = []
-
         for node in self.graph.nodes:
             x_vals.append(node.getLocation()[0])
             y_vals.append((node.getLocation()[1]))
-        x_vals.sort()
-        y_vals.sort()
+            for out_edge_key in node.out_edges:
+                delta_x = node.getLocation()[0] - self.graph.nodes[out_edge_key].getLocation()[0]
+                delta_y = node.getLocation()[1] - self.graph.nodes[out_edge_key].getLocation()[1]
+                plt.arrow(node.getLocation()[0], node.getLocation()[1], delta_x, delta_y,
+                          head_length=0.1, head_width=0.1)
         plt.scatter(x_vals, y_vals)
-
-        # plt.xticks(rotation=90, fontsize=10)
-        # plt.yticks(np.arange(0, 21, 1))
-        # plt.xlabel("country name", fontsize=20)
-        # plt.ylabel("average points", fontsize=20)
-        # plt.title("The average points of each country", fontsize=20)
-
         plt.show()
-        pass
+
+# def graph1test() -> None:
+#     x_val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+#     y_val = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+#     fig, ax = plt.subplots()
+#
+#     plt.annotate(xy=(5, 5), xytext=(1, 1), text="text", arrowprops=dict(facecolor='black', shrink=1))
+#     ax.scatter(x_val, y_val)
+#     # ax.annotate(33, (5, 5))
+#     plt.plot(x_val, y_val)
+#
+#     # plt.grid()
+#     # plt.legend()
+#     plt.show()
+#
+# def graph2test() -> None:
+#     x_val = [0, 1, 2, 7, 4, 5, 6, 3, 8, 9]
+#     y_val = [0, 1, 4, 49, 16, 25, 36, 9, 64, 81]
+#     fig, ax = plt.subplots()
+#
+#     # plt.annotate(xy=(5, 5), xytext=(1, 1), text="text", arrowprops=dict(facecolor='black', shrink=1))
+#     ax.scatter(x_val, y_val)
+#     # ax.annotate(33, (5, 5))
+#     plt.plot(x_val, y_val)
+#     ax.scatter(5.5, 15, color='yellow')
+#     ax.scatter(5, 10, color='yellow')
+#
+#     # plt.grid()
+#     # plt.legend()
+#     plt.show()
+#
+#
+# def graph3test() -> None:
+#     x_val = [1, 5]
+#     y_val = [1, 5]
+#     fig, ax = plt.subplots()
+#     # plt.plot(x_val, y_val, color="red")
+#     plt.scatter(x_val, y_val, color="red")
+#     x_val = [5, 3]
+#     y_val = [1, 3]
+#     # plt.plot(x_val, y_val, color="yellow")
+#     plt.scatter(x_val, y_val, color="yellow")
+#     plt.arrow(1, 1, 3, 3, head_length=0.1, head_width=0.1)
+#     plt.arrow(3, 5, -2, -2, head_length=0.1, head_width=0.1)
+#
+#     plt.show()
+
+
+# if __name__ == '__main__':
+    # graph1test()
+    # graph2test()
+    # graph3test()
+    # print("hey")
