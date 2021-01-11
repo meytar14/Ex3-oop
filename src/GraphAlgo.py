@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from RangeClasses import Range
 from RangeClasses import Range2D
 from RangeClasses import Range2Range
+
+
 # import numpy as np
 
 
@@ -81,25 +83,25 @@ class GraphAlgo(GraphAlgoInterface):
 
     def connected_component(self, id1: int) -> list:
         visited = []
-        nextToVisit = [self.graph.nodes[id1]]
+        next_to_visit = [self.graph.nodes[id1]]
         visited.append(id1)
-        while len(nextToVisit) > 0:
-            node = nextToVisit.pop(0)
+        while len(next_to_visit) > 0:
+            node = next_to_visit.pop(0)
             for ni in node.out_edges:
                 if not visited.__contains__(ni):
                     visited.append(ni)
-                    nextToVisit.append(self.graph.nodes[ni])
+                    next_to_visit.append(self.graph.nodes[ni])
         visited_reverse = []
-        nextToVisit.clear()
+        next_to_visit.clear()
         visited_reverse.append(id1)
         reversed_g = self.graph.reversed_graph()
-        nextToVisit.append(reversed_g.nodes[id1])
-        while len(nextToVisit) > 0:
-            node = nextToVisit.pop(0)
+        next_to_visit.append(reversed_g.nodes[id1])
+        while len(next_to_visit) > 0:
+            node = next_to_visit.pop(0)
             for ni in node.out_edges:
                 if not visited_reverse.__contains__(ni):
                     visited_reverse.append(ni)
-                    nextToVisit.append(reversed_g.nodes[ni])
+                    next_to_visit.append(reversed_g.nodes[ni])
         id1_connected_component = []
         for node in visited:
             if visited_reverse.__contains__(node):
@@ -132,15 +134,10 @@ class GraphAlgo(GraphAlgoInterface):
                 y0 = y
             if y > y1:
                 y1 = y
-            x_range=Range(x0,x1)
-            y_range=Range(y0,y1)
-            dim=Range2D(x_range,y_range)
+            x_range = Range(x0, x1)
+            y_range = Range(y0, y1)
+            dim = Range2D(x_range, y_range)
             return dim
-
-
-
-
-
 
     def plot_graph(self) -> None:
         x_vals = []
@@ -150,50 +147,49 @@ class GraphAlgo(GraphAlgoInterface):
             y_vals.append((node.getLocation()[1]))
             for out_edge_key in node.out_edges:
                 delta_x = self.graph.nodes[out_edge_key].getLocation()[0] - node.getLocation()[0]
-                if (delta_x > 0):
+                if delta_x > 0:
                     delta_x = delta_x - 0.085
-                if (delta_x < 0):
+                if delta_x < 0:
                     delta_x = delta_x + 0.085
                 delta_y = self.graph.nodes[out_edge_key].getLocation()[1] - node.getLocation()[1]
-                if (delta_y > 0):
+                if delta_y > 0:
                     delta_y = delta_y - 0.085
-                if (delta_y < 0):
+                if delta_y < 0:
                     delta_y = delta_y + 0.085
                 plt.arrow(node.getLocation()[0], node.getLocation()[1], delta_x, delta_y,
                           head_length=0.1, head_width=0.1)
         plt.scatter(x_vals, y_vals)
         plt.show()
 
-
     def plot_graph2(self) -> None:
-            x_vals = []
-            y_vals = []
-            xr = Range(0, 10)
-            yr = Range(0, 10)
-            dim = Range2D(xr, yr)
-            r2r = Range2Range( self.graph_range(),dim)
-            for node in self.graph.nodes.values():
-                x, y = r2r.world_to_frame(node.getLocation()[0], node.getLocation()[1])
-                x_vals.append(x)
-                y_vals.append(y)
-                for out_edge_key in node.out_edges:
-                    x_neighbor , y_neighbor=r2r.world_to_frame(self.graph.nodes[out_edge_key].getLocation()[0], self.graph.nodes[out_edge_key].getLocation()[1])
+        x_vals = []
+        y_vals = []
+        xr = Range(0, 10)
+        yr = Range(0, 10)
+        dim = Range2D(xr, yr)
+        r2r = Range2Range(self.graph_range(), dim)
+        for node in self.graph.nodes.values():
+            x, y = r2r.world_to_frame(node.getLocation()[0], node.getLocation()[1])
+            x_vals.append(x)
+            y_vals.append(y)
+            for out_edge_key in node.out_edges:
+                x_neighbor, y_neighbor = r2r.world_to_frame(self.graph.nodes[out_edge_key].getLocation()[0],
+                                                            self.graph.nodes[out_edge_key].getLocation()[1])
                 #    plt.plot([x,x_neighbor],[y,y_neighbor])
-                    delta_x = x_neighbor - x
-                    # if (delta_x > 0):
-                    #     delta_x = delta_x - 0.00005
-                    # if (delta_x < 0):
-                    #     delta_x = delta_x + 0.00005
-                    delta_y = y_neighbor - y
-                    # if (delta_y > 0):
-                    #     delta_y = delta_y - 0.00005
-                    # if (delta_y < 0):
-                    #     delta_y = delta_y + 0.00005
-                    plt.arrow(x, y, delta_x, delta_y,
-                               head_length=0.0001, head_width=0.0001, width=0.000005)
-            plt.scatter(x_vals, y_vals)
-            plt.show()
-
+                delta_x = x_neighbor - x
+                # if (delta_x > 0):
+                #     delta_x = delta_x - 0.00005
+                # if (delta_x < 0):
+                #     delta_x = delta_x + 0.00005
+                delta_y = y_neighbor - y
+                # if (delta_y > 0):
+                #     delta_y = delta_y - 0.00005
+                # if (delta_y < 0):
+                #     delta_y = delta_y + 0.00005
+                plt.arrow(x, y, delta_x, delta_y,
+                          head_length=0.0001, head_width=0.0001, width=0.000005)
+        plt.scatter(x_vals, y_vals)
+        plt.show()
 
 # def graph1test() -> None:
 #     x_val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -243,7 +239,7 @@ class GraphAlgo(GraphAlgoInterface):
 
 
 # if __name__ == '__main__':
-    # graph1test()
-    # graph2test()
-    # graph3test()
-    # print("hey")
+# graph1test()
+# graph2test()
+# graph3test()
+# print("hey")
