@@ -1,21 +1,19 @@
 from GraphAlgoInterface import GraphAlgoInterface
-from Graph import Graph
+from DiGraph import DiGraph
 import json
 import matplotlib.pyplot as plt
 from RangeClasses import Range
 from RangeClasses import Range2D
 from RangeClasses import Range2Range
-
-
 # import numpy as np
 
 
 class GraphAlgo(GraphAlgoInterface):
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: DiGraph):
         self.graph = graph
 
-    def get_graph(self) -> Graph:
+    def get_graph(self) -> DiGraph:
         return self.graph
 
     def load_from_json(self, file_name: str) -> bool:
@@ -28,8 +26,10 @@ class GraphAlgo(GraphAlgoInterface):
                     self.graph.add_node(node["id"], p)
                 for edge in data["Edges"]:
                     self.graph.add_edge(edge["src"], edge["dest"], edge["w"])
+            return True
         except IOError as e:
             print(e)
+            return False
 
     def save_to_json(self, file_name: str) -> bool:
         nodes = []
@@ -41,15 +41,18 @@ class GraphAlgo(GraphAlgoInterface):
             for dest in node.out_edges:
                 edges.append({"src": node.getKey(), "w": node.out_edges[dest], "dest": dest})
         data = {"Nodes": nodes, "Edges": edges}
-        with open(file_name, "w") as file:
-            json.dump(data, fp=file)
+        try:
+            with open(file_name, "w") as file:
+                json.dump(data, fp=file)
+            return True
+        except IOError as e:
+            print(e)
+            return False
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         if not self.graph:
             return None
-        if not self.graph.nodes.__contains__(id1):
-            return None
-        if not self.graph.nodes.__contains__(id2):
+        if id1 not in self.graph.nodes or id2 not in self.graph.nodes:
             return None
 
         src_node = self.graph.nodes.get(id1)
@@ -66,13 +69,17 @@ class GraphAlgo(GraphAlgoInterface):
                     self.graph.nodes[neighbor_key].setTag(node.getTag() + node.out_edges[neighbor_key])
                     prev[neighbor_key] = node.getKey()
                     stack.append(self.graph.nodes[neighbor_key])
-                    stack.sort(key=lambda x: x.weight, reverse=False)
+                    stack.sort(key=lambda x: x.tag, reverse=False)
                 else:
                     if self.graph.nodes[neighbor_key].getTag() > node.getTag() + node.out_edges[neighbor_key]:
                         self.graph.nodes[neighbor_key].setTag(node.getTag() + node.out_edges[neighbor_key])
                         prev[neighbor_key] = node.getKey()
+                        if self.graph.nodes[neighbor_key] in stack:
+                            stack.remove(self.graph.nodes[neighbor_key])
                         stack.append(self.graph.nodes[neighbor_key])
-                        stack.sort(key=lambda x: x.weight, reverse=False)
+                        stack.sort(key=lambda x: x.tag, reverse=False)
+        if id2 not in prev:
+            return None
         path = [id2]
         temp_key = id2
         while prev[temp_key] != id1:
@@ -80,8 +87,11 @@ class GraphAlgo(GraphAlgoInterface):
             temp_key = prev[temp_key]
         path.append(id1)
         path.reverse()
+        return self.graph.nodes[id2].tag, path
 
     def connected_component(self, id1: int) -> list:
+        if id1 not in self.graph.nodes:
+            return None
         visited = []
         next_to_visit = [self.graph.nodes[id1]]
         visited.append(id1)
@@ -121,9 +131,16 @@ class GraphAlgo(GraphAlgoInterface):
                 nodes_that_left.remove(key)
         return connected_components
 
-    def graph_range(self):
-        x0 = x1 = y0 = y1 = 0
+    def graph_range(self) -> Range2D:
+        if len(self.graph.nodes) < 1:
+            return None
+        x0 = y0 = x1 = y1 = 0
+        first = True
         for node in self.graph.nodes.values():
+            if first:
+                x0 = x1 = node.getLocation()[0]
+                y0 = y1 = node.getLocation()[1]
+                first = False
             x = node.getLocation()[0]
             y = node.getLocation()[1]
             if x < x0:
@@ -134,10 +151,10 @@ class GraphAlgo(GraphAlgoInterface):
                 y0 = y
             if y > y1:
                 y1 = y
-            x_range = Range(x0, x1)
-            y_range = Range(y0, y1)
-            dim = Range2D(x_range, y_range)
-            return dim
+        x_range = Range(x0, x1)
+        y_range = Range(y0, y1)
+        dim = Range2D(x_range, y_range)
+        return dim
 
     def plot_graph(self) -> None:
         x_vals = []

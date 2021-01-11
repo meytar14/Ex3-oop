@@ -5,7 +5,7 @@ class Node:
         self.tag = 0
         self.in_edges = {}
         self.out_edges = {}
-        # self.weight = -1
+        # TODO need to add that the node pos cant be negative
 
     def getKey(self):
         return self.key

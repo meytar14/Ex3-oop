@@ -1,7 +1,7 @@
 class Range:
-    def __init__(self, min: float, max: float):
-        self.min = min
-        self.max = max
+    def __init__(self, mini: float, maxi: float):
+        self.min = mini
+        self.max = maxi
 
     def get_length(self):
         return self.max-self.min
@@ -38,11 +38,3 @@ class Range2Range:
     def world_to_frame(self, x, y):
         x1, y1 = self.world.get_portion(x, y)
         return self.frame.from_portion(x1, y1)
-
-
-
-
-
-
-
-
