@@ -19,7 +19,7 @@ class GraphAlgo(GraphAlgoInterface):
                 data = json.load(file)
                 for node in data["Nodes"]:
                     x, y, z = node["pos"].split(",")
-                    p = (x, y, z)
+                    p = (float(x), float(y), float(z))
                     self.graph.add_node(node["id"], p)
                 for edge in data["Edges"]:
                     self.graph.add_edge(edge["src"], edge["dest"], edge["w"])
@@ -119,16 +119,25 @@ class GraphAlgo(GraphAlgoInterface):
     def plot_graph(self) -> None:
         x_vals = []
         y_vals = []
-        for node in self.graph.nodes:
+        for node in self.graph.nodes.values():
             x_vals.append(node.getLocation()[0])
             y_vals.append((node.getLocation()[1]))
             for out_edge_key in node.out_edges:
-                delta_x = node.getLocation()[0] - self.graph.nodes[out_edge_key].getLocation()[0]
-                delta_y = node.getLocation()[1] - self.graph.nodes[out_edge_key].getLocation()[1]
+                delta_x = self.graph.nodes[out_edge_key].getLocation()[0]-node.getLocation()[0]
+                if(delta_x>0):
+                    delta_x=delta_x-0.085
+                if (delta_x < 0):
+                    delta_x = delta_x+0.085
+                delta_y = self.graph.nodes[out_edge_key].getLocation()[1]-node.getLocation()[1]
+                if (delta_y > 0):
+                    delta_y = delta_y - 0.085
+                if(delta_y < 0):
+                    delta_y = delta_y + 0.085
                 plt.arrow(node.getLocation()[0], node.getLocation()[1], delta_x, delta_y,
                           head_length=0.1, head_width=0.1)
         plt.scatter(x_vals, y_vals)
         plt.show()
+
 
 # def graph1test() -> None:
 #     x_val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
