@@ -5,7 +5,7 @@ class Node:
         self.tag = 0
         self.in_edges = {}
         self.out_edges = {}
-        # self.weight = -1
+        # TODO need to add that the node pos cant be negative
 
     def getKey(self):
         return self.key
@@ -13,8 +13,8 @@ class Node:
     def getLocation(self):
         return self.pos
 
-    def setLocation(self,pos):
-        self.pos=pos
+    def setLocation(self, pos):
+        self.pos = pos
 
     def getTag(self):
         return self.tag
@@ -26,7 +26,7 @@ class Node:
         self.out_edges[key] = weight
 
     def addInNi(self, key, weight):
-        self.in_edges[key]=weight
+        self.in_edges[key] = weight
 
     def getInEdges(self):
         return self.in_edges
