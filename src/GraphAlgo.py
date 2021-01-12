@@ -121,7 +121,12 @@ class GraphAlgo(GraphAlgoInterface):
 
     def graph_range(self):
         x0 = x1 = y0 = y1 = 0
+        first=1
         for node in self.graph.nodes.values():
+            if first==1:
+                x0=x1=node.getLocation()[0]
+                y0=y1=node.getLocation()[1]
+                first=0
             x = node.getLocation()[0]
             y = node.getLocation()[1]
             if x < x0:
@@ -132,10 +137,10 @@ class GraphAlgo(GraphAlgoInterface):
                 y0 = y
             if y > y1:
                 y1 = y
-            x_range=Range(x0,x1)
-            y_range=Range(y0,y1)
-            dim=Range2D(x_range,y_range)
-            return dim
+        x_range=Range(x0,x1)
+        y_range=Range(y0,y1)
+        dim=Range2D(x_range,y_range)
+        return dim
 
 
 
