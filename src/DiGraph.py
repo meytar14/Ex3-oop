@@ -2,34 +2,66 @@ from GraphInterface import GraphInterface
 from Node import Node
 
 
+# class which represent each graph the we use
 class DiGraph(GraphInterface):
     def __init__(self):
+        """
+        init function for Digraph
+        """
         self.nodes = {}
         self.edge_size = 0
         self.MC = 0
 
     def v_size(self) -> int:
+        """
+        the function return the number of the nodes
+        """
         return len(self.nodes)
 
     def e_size(self) -> int:
+        """
+        the function return the number of edges
+        """
         return self.edge_size
 
     def get_all_v(self) -> dict:
+        """
+        the function return all the nodes
+        """
         return self.nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
+        """
+        the function gets a node key and return all the edges to the node with the given key
+        the function return Node if the node isn't in the graph
+        """
+        if id1 not in self.nodes:
+            return None
         return self.nodes[id1].getInEdges()
 
     def all_out_edges_of_node(self, id1: int) -> dict:
+        """
+        the function gets a node key and return all the edges from the node with the given key
+        the function return Node if the node isn't in the graph
+        """
+        if id1 not in self.nodes:
+            return None
         return self.nodes[id1].getOutEdges()
 
     def get_mc(self) -> int:
+        """
+        return the number of changes made in this graph
+        """
         return self.MC
 
     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
+        """
+        the function gets 2 keys and weight and create an edge from the first onr to the second
+        the function return false if not both nodes are in the graph or the edge already exists
+        else she return true
+        """
         if id1 not in self.nodes or id2 not in self.nodes:
             return False
-        # TODO check if we need this if statement. maybe we need to update the weight
         if id2 in self.nodes[id1].out_edges:
             return False
         self.nodes[id1].addNi(id2, weight)
@@ -39,6 +71,11 @@ class DiGraph(GraphInterface):
         return True
 
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
+        """
+        the function gets key and position
+        she create new node with the given data and insert him the the graph
+        the function return false if there is already an existing node if this key. else true
+        """
         if node_id in self.nodes:
             return False
         node = Node(node_id, pos)
@@ -47,6 +84,10 @@ class DiGraph(GraphInterface):
         return True
 
     def remove_node(self, node_id: int) -> bool:
+        """
+        the function gets a key and remove the node with the given key from the graph
+        the function return false if there is no node with this key. else true
+        """
         if node_id not in self.nodes:
             return False
         removed_keys = []
@@ -64,6 +105,11 @@ class DiGraph(GraphInterface):
         return True
 
     def remove_edge(self, node_id1: int, node_id2: int) -> bool:
+        """
+        the function gets 2 keys and remove the edge from the first node to the second
+        the function return false if there if not both nodes are in the graph or there is no edge between the 2
+        else she return true
+        """
         if node_id1 not in self.nodes or node_id2 not in self.nodes:
             return False
         node1 = self.nodes[node_id1]
@@ -76,6 +122,9 @@ class DiGraph(GraphInterface):
         return True
 
     def reversed_graph(self):  # return a reversed graph of this graph
+        """
+        the function return a reversed graph from self.graph
+        """
         g = DiGraph()
         for node in self.nodes.values():
             g.add_node(node.getKey(), node.getLocation())
@@ -85,13 +134,20 @@ class DiGraph(GraphInterface):
         return g
 
 
+# class which represent the reversed graph
 class ReversedGraph:
     def __init__(self):
+        """
+        first set function for a reversed graph
+        """
         self.nodes = {}
         self.edge_size = 0
         self.MC = 0
 
     def init(self, graph: DiGraph):
+        """
+        the function gets a DiGraph and fill the data in our reversed graph
+        """
         for node in graph.nodes.values():
             self.add_node(node.getKey(), node)
         for node in graph.nodes.values():
@@ -99,9 +155,13 @@ class ReversedGraph:
                 self.add_edge(node.getKey(), dest, node.in_edges[dest])
 
     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
+        """
+        the function gets 2 keys and weight and create an edge from the first onr to the second
+        the function return false if not both nodes are in the graph or the edge already exists
+        else she return true
+        """
         if id1 not in self.nodes or id2 not in self.nodes:
             return False
-        # TODO check if we need this if statement. maybe we need to update the weight
         if id2 in self.nodes[id1].out_edges:
             return False
         self.nodes[id1].addNi(id2, weight)
@@ -111,6 +171,11 @@ class ReversedGraph:
         return True
 
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
+        """
+        the function gets key and position
+        she create new node with the given data and insert him the the graph
+        the function return false if there is already an existing node if this key. else true
+        """
         if self.nodes.keys().__contains__(node_id):
             return False
         node = Node(node_id, pos)

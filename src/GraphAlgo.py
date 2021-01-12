@@ -7,16 +7,25 @@ from RangeClasses import Range2D
 from RangeClasses import Range2Range
 # import numpy as np
 
-
+# class that represent the algo that we do on each graph
 class GraphAlgo(GraphAlgoInterface):
-
     def __init__(self, graph: DiGraph):
+        """
+        init function to graphAlgo
+        """
         self.graph = graph
 
     def get_graph(self) -> DiGraph:
+        """
+        return the graph inside graphAlgo
+        """
         return self.graph
 
     def load_from_json(self, file_name: str) -> bool:
+        """
+        load a graph from a file into self.graph
+        the function return True if it succeeded. False if not
+        """
         try:
             with open(file_name, "r") as file:
                 data = json.load(file)
@@ -32,6 +41,10 @@ class GraphAlgo(GraphAlgoInterface):
             return False
 
     def save_to_json(self, file_name: str) -> bool:
+        """
+        save a self.graph to file
+        the function return True if it succeeded. False if not
+        """
         nodes = []
         edges = []
         for node in self.graph.nodes.values():
@@ -50,6 +63,11 @@ class GraphAlgo(GraphAlgoInterface):
             return False
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
+        """
+        the function find the shortest path from one node to a diff one
+        the function return a tuple of the total weight of the path and a list of the path
+        the function None if the nodes are not in the graph or there is no path that connect them
+        """
         if not self.graph:
             return None
         if id1 not in self.graph.nodes or id2 not in self.graph.nodes:
@@ -90,6 +108,10 @@ class GraphAlgo(GraphAlgoInterface):
         return self.graph.nodes[id2].tag, path
 
     def connected_component(self, id1: int) -> list:
+        """
+        the function gets a node key and return a list of the nodes that are connected component with him
+        the function return None if the nodes isn't in the graph
+        """
         if id1 not in self.graph.nodes:
             return None
         visited = []
@@ -119,6 +141,9 @@ class GraphAlgo(GraphAlgoInterface):
         return id1_connected_component
 
     def connected_components(self) -> list:  # list of lists
+        """
+        the function return a list lists that each list is a connected component in thr graph
+        """
         nodes_that_left = []  # the keys of the nodes that doesn't belong to another connected_component
         connected_components = []  # list of all the connected_components in this graph
         for node in self.graph.nodes:
@@ -131,9 +156,11 @@ class GraphAlgo(GraphAlgoInterface):
                 nodes_that_left.remove(key)
         return connected_components
 
-
-
     def graph_range(self) -> Range2D:
+        """
+        the function return the x,y ranges of self.graph which represented as Range2D obj
+        the function return None if there are no nodes in the graph
+        """
         if len(self.graph.nodes) < 1:
             return None
         x0 = y0 = x1 = y1 = 0
@@ -158,8 +185,10 @@ class GraphAlgo(GraphAlgoInterface):
         dim = Range2D(x_range, y_range)
         return dim
 
-
     def plot_graph(self) -> None:
+        """
+        function for plot the graph. this function return None
+        """
         x_vals = []
         y_vals = []
         for node in self.graph.nodes.values():
@@ -182,6 +211,9 @@ class GraphAlgo(GraphAlgoInterface):
         plt.show()
 
     def plot_graph2(self) -> None:
+        """
+        function for plot the graph. this function return None
+        """
         x_vals = []
         y_vals = []
         xr = Range(0, 10)
@@ -198,16 +230,16 @@ class GraphAlgo(GraphAlgoInterface):
                 #    plt.plot([x,x_neighbor],[y,y_neighbor])
                 delta_x = x_neighbor - x
                 delta_y = y_neighbor - y
-                p_x=delta_x/(delta_y+delta_x)
+                p_x = delta_x / (delta_y + delta_x)
 
-                if (delta_y > 0):
-                    delta_y = delta_y - (1-p_x)*0.25
-                if (delta_y < 0):
-                    delta_y = delta_y + (1-p_x)*0.25
-                if (delta_x > 0):
-                    delta_x = delta_x - p_x*0.25
-                if (delta_x < 0):
-                    delta_x = delta_x + p_x*0.25
+                if delta_y > 0:
+                    delta_y = delta_y - (1 - p_x) * 0.25
+                if delta_y < 0:
+                    delta_y = delta_y + (1 - p_x) * 0.25
+                if delta_x > 0:
+                    delta_x = delta_x - p_x * 0.25
+                if delta_x < 0:
+                    delta_x = delta_x + p_x * 0.25
                 plt.arrow(x, y, delta_x, delta_y,
                           head_length=0.25, head_width=0.15, width=0.000005)
         plt.scatter(x_vals, y_vals)

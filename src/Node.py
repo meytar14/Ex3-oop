@@ -1,11 +1,15 @@
+# class which represent each in the graph
 class Node:
     def __init__(self, key: int, pos=(0, 0, 0)):
+        """
+        init function for each node
+        """
         self.key = key
         self.pos = pos
         self.tag = 0
         self.in_edges = {}
         self.out_edges = {}
-        # TODO need to add that the node pos cant be negative
+        # TODO need to check if the node pos cant be negative
 
     def getKey(self):
         return self.key
@@ -23,9 +27,17 @@ class Node:
         self.tag = tag
 
     def addNi(self, key: int, weight: float):
+        """
+        the function get a key and weight
+        the function add an edge from this node to the node with the given key with the given weight
+        """
         self.out_edges[key] = weight
 
     def addInNi(self, key, weight):
+        """
+        the function get a key and weight
+        the function add an edge to this node from the node with the given key with the given weight
+        """
         self.in_edges[key] = weight
 
     def getInEdges(self):
@@ -35,7 +47,9 @@ class Node:
         return self.out_edges
 
     def removeNi(self, key: int):
-        self.out_edges.pop(key)
+        if key in self.out_edges:
+            self.out_edges.pop(key)
 
     def removeInNi(self, key: int):
-        self.in_edges.pop(key)
+        if key in self.in_edges:
+            self.in_edges.pop(key)
