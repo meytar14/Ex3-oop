@@ -6,6 +6,8 @@ class Range:
         """
         self.min = mini
         self.max = maxi
+        if self.min == self.max:
+            self.min -= 0.00000000001
 
     def get_length(self):
         """

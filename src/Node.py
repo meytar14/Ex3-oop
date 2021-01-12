@@ -1,6 +1,9 @@
+import random
+
+
 # class which represent each in the graph
 class Node:
-    def __init__(self, key: int, pos=(0, 0, 0)):
+    def __init__(self, key: int, pos: tuple = (random.uniform(0.0, 10.0), random.uniform(0.0, 10.0), random.uniform(0.0, 10.0))):
         """
         init function for each node
         """

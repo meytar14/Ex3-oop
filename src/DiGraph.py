@@ -1,5 +1,6 @@
 from GraphInterface import GraphInterface
 from Node import Node
+import random
 
 
 # class which represent each graph the we use
@@ -70,7 +71,7 @@ class DiGraph(GraphInterface):
         self.edge_size += 1
         return True
 
-    def add_node(self, node_id: int, pos: tuple = None) -> bool:
+    def add_node(self, node_id: int, pos: tuple = (random.uniform(0.0, 10.0), random.uniform(0.0, 10.0), random.uniform(0.0, 10.0))) -> bool:
         """
         the function gets key and position
         she create new node with the given data and insert him the the graph
@@ -135,50 +136,50 @@ class DiGraph(GraphInterface):
 
 
 # class which represent the reversed graph
-class ReversedGraph:
-    def __init__(self):
-        """
-        first set function for a reversed graph
-        """
-        self.nodes = {}
-        self.edge_size = 0
-        self.MC = 0
-
-    def init(self, graph: DiGraph):
-        """
-        the function gets a DiGraph and fill the data in our reversed graph
-        """
-        for node in graph.nodes.values():
-            self.add_node(node.getKey(), node)
-        for node in graph.nodes.values():
-            for dest in node.in_edges:
-                self.add_edge(node.getKey(), dest, node.in_edges[dest])
-
-    def add_edge(self, id1: int, id2: int, weight: float) -> bool:
-        """
-        the function gets 2 keys and weight and create an edge from the first onr to the second
-        the function return false if not both nodes are in the graph or the edge already exists
-        else she return true
-        """
-        if id1 not in self.nodes or id2 not in self.nodes:
-            return False
-        if id2 in self.nodes[id1].out_edges:
-            return False
-        self.nodes[id1].addNi(id2, weight)
-        self.nodes[id2].addInNi(id1, weight)
-        self.MC += 1
-        self.edge_size += 1
-        return True
-
-    def add_node(self, node_id: int, pos: tuple = None) -> bool:
-        """
-        the function gets key and position
-        she create new node with the given data and insert him the the graph
-        the function return false if there is already an existing node if this key. else true
-        """
-        if self.nodes.keys().__contains__(node_id):
-            return False
-        node = Node(node_id, pos)
-        self.nodes[node_id] = node
-        self.MC += 1
-        return True
+# class ReversedGraph:
+#     def __init__(self):
+#         """
+#         first set function for a reversed graph
+#         """
+#         self.nodes = {}
+#         self.edge_size = 0
+#         self.MC = 0
+#
+#     def init(self, graph: DiGraph):
+#         """
+#         the function gets a DiGraph and fill the data in our reversed graph
+#         """
+#         for node in graph.nodes.values():
+#             self.add_node(node.getKey(), node)
+#         for node in graph.nodes.values():
+#             for dest in node.in_edges:
+#                 self.add_edge(node.getKey(), dest, node.in_edges[dest])
+#
+#     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
+#         """
+#         the function gets 2 keys and weight and create an edge from the first onr to the second
+#         the function return false if not both nodes are in the graph or the edge already exists
+#         else she return true
+#         """
+#         if id1 not in self.nodes or id2 not in self.nodes:
+#             return False
+#         if id2 in self.nodes[id1].out_edges:
+#             return False
+#         self.nodes[id1].addNi(id2, weight)
+#         self.nodes[id2].addInNi(id1, weight)
+#         self.MC += 1
+#         self.edge_size += 1
+#         return True
+#
+#     def add_node(self, node_id: int, pos: tuple = (random.uniform(0.0, 10.0), random.uniform(0.0, 10.0), random.uniform(0.0, 10.0))) -> bool:
+#         """
+#         the function gets key and position
+#         she create new node with the given data and insert him the the graph
+#         the function return false if there is already an existing node if this key. else true
+#         """
+#         if self.nodes.keys().__contains__(node_id):
+#             return False
+#         node = Node(node_id, pos)
+#         self.nodes[node_id] = node
+#         self.MC += 1
+#         return True
