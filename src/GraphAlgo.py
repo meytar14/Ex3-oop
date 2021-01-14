@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from RangeClasses import Range
 from RangeClasses import Range2D
 from RangeClasses import Range2Range
-import numpy as np
-from time import time
 
 
 # class that represent the algo that we do on each graph
@@ -119,22 +117,22 @@ class GraphAlgo(GraphAlgoInterface):
         for node in self.graph.nodes.values():
             node.tag = 0
         next_to_visit = [self.graph.nodes[id1]]
-        self.graph.nodes[id1].tag = 1
         while next_to_visit:
-            node = next_to_visit.pop(0)
-            for ni in node.out_edges:
-                if self.graph.nodes[ni].tag == 0:
-                    self.graph.nodes[ni].tag = 1
+            node = next_to_visit.pop()
+            if node.tag == 0:
+                node.tag = 1
+                for ni in node.out_edges:
                     next_to_visit.append(self.graph.nodes[ni])
         next_to_visit.clear()
         reversed_g = self.graph.reversed_graph()
-        reversed_g.nodes[id1].tag = 1
+        for node in reversed_g.nodes.values():
+            node.tag = 0
         next_to_visit.append(reversed_g.nodes[id1])
-        while len(next_to_visit) > 0:
+        while next_to_visit:
             node = next_to_visit.pop(0)
-            for ni in node.out_edges:
-                if self.graph.nodes[ni].tag == 0:
-                    self.graph.nodes[ni].tag = 1
+            if node.tag == 0:
+                node.tag = 1
+                for ni in node.out_edges:
                     next_to_visit.append(reversed_g.nodes[ni])
         id1_connected_component = []
         for node_key in self.graph.nodes:
@@ -187,109 +185,36 @@ class GraphAlgo(GraphAlgoInterface):
         dim = Range2D(x_range, y_range)
         return dim
 
-    # def plot_graph(self) -> None:
-    #     """
-    #     function for plot the graph. this function return None
-    #     """
-    #     x_vals = []
-    #     y_vals = []
-    #     for node in self.graph.nodes.values():
-    #         x_vals.append(node.getLocation()[0])
-    #         y_vals.append((node.getLocation()[1]))
-    #         for out_edge_key in node.out_edges:
-    #             delta_x = self.graph.nodes[out_edge_key].getLocation()[0] - node.getLocation()[0]
-    #             if delta_x > 0:
-    #                 delta_x = delta_x - 0.085
-    #             if delta_x < 0:
-    #                 delta_x = delta_x + 0.085
-    #             delta_y = self.graph.nodes[out_edge_key].getLocation()[1] - node.getLocation()[1]
-    #             if delta_y > 0:
-    #                 delta_y = delta_y - 0.085
-    #             if delta_y < 0:
-    #                 delta_y = delta_y + 0.085
-    #             plt.arrow(node.getLocation()[0], node.getLocation()[1], delta_x, delta_y,
-    #                       head_length=0.25, head_width=0.15, width=0.000005)
-    #     plt.scatter(x_vals, y_vals)
-    #     plt.show()
-
-    def plot_graph2(self) -> None:
-        """
-        function for plot the graph. this function return None
-        """
-        x_vals = []
-        y_vals = []
-        xr = Range(0, 10)
-        yr = Range(0, 10)
-        dim = Range2D(xr, yr)
-        r2r = Range2Range(self.graph_range(), dim)
-        for node in self.graph.nodes.values():
-            x, y = r2r.world_to_frame(node.getLocation()[0], node.getLocation()[1])
-            x_vals.append(x)
-            y_vals.append(y)
-            for out_edge_key in node.out_edges:
-                x_neighbor, y_neighbor = r2r.world_to_frame(self.graph.nodes[out_edge_key].getLocation()[0],
-                                                            self.graph.nodes[out_edge_key].getLocation()[1])
-                #    plt.plot([x,x_neighbor],[y,y_neighbor])
-                delta_x = x_neighbor - x
-                delta_y = y_neighbor - y
-                p_x = delta_x / (delta_y + delta_x)
-
-                if delta_y > 0:
-                    # y = y + 0.1
-                    delta_y = (delta_y - (1 - p_x) * 0.4) - 0.1
-                elif delta_y < 0:
-                    # y = y - 0.1
-                    delta_y = (delta_y + (1 - p_x) * 0.4) + 0.1
-                if delta_x > 0:
-                    # x = x + 0.1
-                    delta_x = (delta_x - p_x * 0.33) - 0.1
-                elif delta_x < 0:
-                    # x = x - 0.1
-                    delta_x = (delta_x + p_x * 0.33) + 0.1
-                plt.arrow(x, y, delta_x, delta_y,
-                          head_length=0.25, head_width=0.15, width=0.000005)
-                # plt.scatter(x, y)
-        plt.scatter(x_vals, y_vals)
-        plt.show()
-
     def plot_graph(self) -> None:
         """
         function for plot the graph. this function return None
         """
+        def world_to_world(world1: tuple, world2: tuple, point: tuple) -> tuple:
+            # 1: (x1,y1, x2,y2)
+            dx1 = world1[2] - world1[0]
+            dy1 = world1[3]-world1[1]
+            ratiox = (point[0]-world1[0])/dx1
+            ratioy = (point[1]-world1[1])/dy1
+            dx2 = world2[2] - world2[0]
+            dy2 = world2[3]-world2[1]
+            return ratiox*dx2, ratioy*dy2
         x_vals = []
         y_vals = []
         xr = Range(0, 10)
         yr = Range(0, 10)
         dim = Range2D(xr, yr)
         r2r = Range2Range(self.graph_range(), dim)
+        r = self.graph_range()
+        world = (r.x_range.min, r.y_range.min, r.x_range.max, r.y_range.max)
         for node in self.graph.nodes.values():
-            x, y = r2r.world_to_frame(node.getLocation()[0], node.getLocation()[1])
+            x, y = world_to_world(world, (0, 0, 10, 10), (node.getLocation()[0], node.getLocation()[1]))
             x_vals.append(x)
             y_vals.append(y)
             for out_edge_key in node.out_edges:
                 x_neighbor, y_neighbor = r2r.world_to_frame(self.graph.nodes[out_edge_key].getLocation()[0],
                                                             self.graph.nodes[out_edge_key].getLocation()[1])
-                #    plt.plot([x,x_neighbor],[y,y_neighbor])
                 delta_x = x_neighbor - x
                 delta_y = y_neighbor - y
-                # p_x = delta_x / (delta_y + delta_x)
-
-                # if delta_y > 0:
-                #     # y = y + 0.1
-                #     delta_y = (delta_y - (1 - p_x) * 0.4) - 0.1
-                # elif delta_y < 0:
-                #     # y = y - 0.1
-                #     delta_y = (delta_y + (1 - p_x) * 0.4) + 0.1
-                # if delta_x > 0:
-                #     # x = x + 0.1
-                #     delta_x = (delta_x - p_x * 0.33) - 0.1
-                # elif delta_x < 0:
-                #     # x = x - 0.1
-                #     delta_x = (delta_x + p_x * 0.33) + 0.1
-                plt.arrow(x, y, delta_x, delta_y,
-                          head_length=0.1, head_width=0.15, width=0.000005)
-                # plt.scatter(x, y)
+                plt.arrow(x, y, delta_x, delta_y, head_length=1, length_includes_head=True, width=0.009, head_width=0.09)
         plt.scatter(x_vals, y_vals)
-        # plt.xticks(np.arange(0, 10, 1))
-        # plt.yticks(np.arange(0, 10, 1))
         plt.show()

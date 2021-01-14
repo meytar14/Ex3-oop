@@ -3,7 +3,8 @@ import random
 
 # class which represent each in the graph
 class Node:
-    def __init__(self, key: int, pos: tuple = (random.uniform(0.0, 10.0), random.uniform(0.0, 10.0), random.uniform(0.0, 10.0))):
+    def __init__(self, key: int, pos: tuple = (random.uniform(0.0, 10.0),
+                                               random.uniform(0.0, 10.0), random.uniform(0.0, 10.0))):
         """
         init function for each node
         """
@@ -12,7 +13,6 @@ class Node:
         self.tag = 0
         self.in_edges = {}
         self.out_edges = {}
-        # TODO need to check if the node pos cant be negative
 
     def getKey(self):
         return self.key

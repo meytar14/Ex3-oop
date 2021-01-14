@@ -21,15 +21,14 @@ class TestGraphAlgo(TestCase):
         ga = GraphAlgo(graph)
         ga.load_from_json("load_test")
 
-        g2=DiGraph()
-        g2.add_node(0,(0,0,0))
+        g2 = DiGraph()
+        g2.add_node(0, (0, 0, 0))
         g2.add_node(1, (1, 1, 1))
         g2.add_node(2, (2, 2, 2))
         g2.add_node(3, (3, 3, 3))
-        g2.add_edge(0,2,1.2)
-        g2.add_edge(0,1,1)
+        g2.add_edge(0, 2, 1.2)
+        g2.add_edge(0, 1, 1)
         g2.add_edge(2, 3, 3)
-
 
         for node in g2.nodes.values():
             self.assertEqual(ga.graph.nodes[node.key].in_edges, node.in_edges)
@@ -37,10 +36,6 @@ class TestGraphAlgo(TestCase):
         for node in ga.graph.nodes.values():
             self.assertEqual(g2.nodes[node.key].in_edges, node.in_edges)
             self.assertEqual(g2.nodes[node.key].out_edges, node.out_edges)
-
-
-
-
 
     def test_save_to_json(self):
         g2 = DiGraph()
@@ -53,8 +48,8 @@ class TestGraphAlgo(TestCase):
         g2.add_edge(2, 3, 3)
         ga = GraphAlgo(g2)
         ga.save_to_json("save_test")
-        g3=DiGraph()
-        ga2=GraphAlgo(g3)
+        g3 = DiGraph()
+        ga2 = GraphAlgo(g3)
         ga2.load_from_json("save_test")
 
         for node in ga2.graph.nodes.values():
@@ -63,11 +58,6 @@ class TestGraphAlgo(TestCase):
         for node in ga.graph.nodes.values():
             self.assertEqual(ga2.graph.nodes[node.key].in_edges, node.in_edges)
             self.assertEqual(ga2.graph.nodes[node.key].out_edges, node.out_edges)
-
-
-
-
-
 
     def test_shortest_path(self):
         graph = DiGraph()
@@ -94,7 +84,7 @@ class TestGraphAlgo(TestCase):
         ga = GraphAlgo(graph)
         self.assertEqual([], ga.connected_component(5))
         res = [3, 1]
-        self.assertEqual(res, ga.connected_component(3))
+        self.assertEqual(res.sort(), ga.connected_component(3).sort())
         res = [2]
         self.assertEqual(res, ga.connected_component(2))
         res = [4]
