@@ -92,7 +92,7 @@ class TestGraphAlgo(TestCase):
         graph.add_edge(1, 3, 2.3)
         graph.add_edge(3, 4, 2.3)
         ga = GraphAlgo(graph)
-        self.assertIsNone(ga.connected_component(5))
+        self.assertEqual([], ga.connected_component(5))
         res = [3, 1]
         self.assertEqual(res, ga.connected_component(3))
         res = [2]

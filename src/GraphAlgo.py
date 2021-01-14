@@ -6,6 +6,7 @@ from RangeClasses import Range
 from RangeClasses import Range2D
 from RangeClasses import Range2Range
 import numpy as np
+from time import time
 
 
 # class that represent the algo that we do on each graph
@@ -114,31 +115,31 @@ class GraphAlgo(GraphAlgoInterface):
         the function return None if the nodes isn't in the graph
         """
         if id1 not in self.graph.nodes:
-            return None
-        visited = []
+            return []
+        for node in self.graph.nodes.values():
+            node.tag = 0
         next_to_visit = [self.graph.nodes[id1]]
-        visited.append(id1)
-        while len(next_to_visit) > 0:
+        self.graph.nodes[id1].tag = 1
+        while next_to_visit:
             node = next_to_visit.pop(0)
             for ni in node.out_edges:
-                if not visited.__contains__(ni):
-                    visited.append(ni)
+                if self.graph.nodes[ni].tag == 0:
+                    self.graph.nodes[ni].tag = 1
                     next_to_visit.append(self.graph.nodes[ni])
-        visited_reverse = []
         next_to_visit.clear()
-        visited_reverse.append(id1)
         reversed_g = self.graph.reversed_graph()
+        reversed_g.nodes[id1].tag = 1
         next_to_visit.append(reversed_g.nodes[id1])
         while len(next_to_visit) > 0:
             node = next_to_visit.pop(0)
             for ni in node.out_edges:
-                if not visited_reverse.__contains__(ni):
-                    visited_reverse.append(ni)
+                if self.graph.nodes[ni].tag == 0:
+                    self.graph.nodes[ni].tag = 1
                     next_to_visit.append(reversed_g.nodes[ni])
         id1_connected_component = []
-        for node in visited:
-            if visited_reverse.__contains__(node):
-                id1_connected_component.append(node)
+        for node_key in self.graph.nodes:
+            if reversed_g.nodes[node_key].tag == 1 and self.graph.nodes[node_key].tag == 1:
+                id1_connected_component.append(node_key)
         return id1_connected_component
 
     def connected_components(self) -> list:  # list of lists
@@ -149,9 +150,9 @@ class GraphAlgo(GraphAlgoInterface):
         connected_components = []  # list of all the connected_components in this graph
         for node in self.graph.nodes:
             nodes_that_left.append(node)
-        while len(nodes_that_left) > 0:
+        while nodes_that_left:
             n = nodes_that_left[0]
-            n_connected_component = sorted(self.connected_component(n))  # the connected_component of n
+            n_connected_component = self.connected_component(n)  # the connected_component of n
             connected_components.append(n_connected_component)
             for key in n_connected_component:
                 nodes_that_left.remove(key)
@@ -292,9 +293,3 @@ class GraphAlgo(GraphAlgoInterface):
         # plt.xticks(np.arange(0, 10, 1))
         # plt.yticks(np.arange(0, 10, 1))
         plt.show()
-
-# if __name__ == '__main__':
-# graph1test()
-# graph2test()
-# graph3test()
-# print("hey")
